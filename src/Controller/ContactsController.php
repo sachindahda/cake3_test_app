@@ -12,6 +12,8 @@ use App\Controller\AppController;
  */
 class ContactsController extends AppController
 {
+
+
     /**
      * Index method
      *
@@ -24,11 +26,10 @@ class ContactsController extends AppController
             'contain' => ['Companies'],
         ];
         $contacts = $this->Contacts->find()->select(['id',' first_name', 'last_name', 'phone_number'])->all();
-        // $this->set([
-        //             'contacts' => $contacts,
-        //             '_serialize' => ['contacts']
-        //         ]);
-        echo json_encode($contacts);die;
+        $this->set([
+                    'contacts' => $contacts,
+                    '_serialize' => ['contacts']
+                ]);
         
     }
 
@@ -36,7 +37,10 @@ class ContactsController extends AppController
     {
         
         $contacts = $this->Contacts->find()->select(['id',' first_name', 'last_name', 'phone_number','company_id','companies.id','companies.company_name','companies.address'])->contain(['Companies'])->all();
-        echo json_encode($contacts);die;
+        $this->set([
+                    'contacts' => $contacts,
+                    '_serialize' => ['contacts']
+                ]);
         
     }
     
@@ -48,18 +52,26 @@ class ContactsController extends AppController
      */
     public function add()
     {
+        $result=[];
         $contact = $this->Contacts->newEntity();
+
         if ($this->request->is('post')) {
             $contact = $this->Contacts->patchEntity($contact, $this->request->getData());
             if ($this->Contacts->save($contact)) {
-                $this->Flash->success(__('The contact has been saved.'));
+                $result['success']=true;
+                $result['msg']='Contact Saved Successfully.';
 
-                return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The contact could not be saved. Please, try again.'));
+            else{
+                $result['success']=false;
+                $result['msg']='An Error Occured While Saving Contact,Please Fill the all required Fields: (first_name,last_name,phone_number,address,notes,add_notes,internal_notes,comments and company_id)';
+            }
         }
-        $companies = $this->Contacts->Companies->find()->combine('id', 'company_name');
-        $this->set(compact('contact', 'companies'));
+        $this->set([
+                    'contact' => $contact,
+                    'result'=>$result,
+                    '_serialize' => ['contact','result']
+                ]);
     }
 
 }
