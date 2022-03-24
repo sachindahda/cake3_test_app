@@ -22,9 +22,7 @@ class ContactsController extends AppController
 
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Companies'],
-        ];
+        
         $contacts = $this->Contacts->find()->select(['id',' first_name', 'last_name', 'phone_number'])->all();
         $this->set([
                     'contacts' => $contacts,
