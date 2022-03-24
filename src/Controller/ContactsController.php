@@ -38,7 +38,7 @@ class ContactsController extends AppController
         $this->set([
                     'contacts' => $contacts,
                     '_serialize' => ['contacts']
-                ]);
+        ]);
         
     }
     
@@ -69,7 +69,7 @@ class ContactsController extends AppController
                     'contact' => $contact,
                     'result'=>$result,
                     '_serialize' => ['contact','result']
-                ]);
+        ]);
     }
 
 }
